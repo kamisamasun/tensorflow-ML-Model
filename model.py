@@ -1,5 +1,14 @@
-import tensorflow as tf
-from tensorflow.keras import layers
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-print(tf.VERSION)
-print(tf.keras.__version__)
+# 导入TensorFlow和tf.keras
+import tensorflow as tf
+from tensorflow import keras
+
+# 导入辅助库
+import numpy as np
+import matplotlib.pyplot as plt
+
+fashion_mnist = keras.datasets.fashion_mnist
+(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
