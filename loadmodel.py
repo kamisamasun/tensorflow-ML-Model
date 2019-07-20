@@ -8,7 +8,7 @@ import pandas as pd
 
 print(tf.__version__)
 
-model = keras.models.load_model('my_model.h5')
+# model = keras.models.load_model('my_model.h5')
 predict_raw_dataset=pd.read_csv('predict.data', names=['area','category'],
                       na_values = "?", comment='\t',
                       sep=" ", skipinitialspace=True)
@@ -28,6 +28,8 @@ predict_raw_dataset['新洲区'] = (area == 420117)*1.0
 predict_raw_dataset['东湖高新区'] = (area == 420118)*1.0
 predict_raw_dataset['经济开发区'] = (area == 420119)*1.0
 predict_raw_dataset.tail()
+
+print(predict_raw_dataset)
 #
 # train_stats = predict_raw_dataset.describe()
 # train_stats = train_stats.transpose()
