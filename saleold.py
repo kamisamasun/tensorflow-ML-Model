@@ -15,10 +15,9 @@ from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ModelCheckpoi
 from tensorflow.keras.utils import plot_model
 from tensorflow.keras.models import load_model
 
-kc_data_org = pd.read_csv("RentPrice.csv",
-names=["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0",
-        'Brand','balcony',
-        'subway','kitchen','hardcover','rooms','halls','price'],
+kc_data_org = pd.read_csv("saleold.csv",
+names=["build_area", "build_year", "decoration", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "elevator", "floor", "unit_price", "total_floor", "room", "hall", "kitchen", "toilet", "IsMetro"
+],
                       na_values = "?", comment='\t',
                       sep=" ", skipinitialspace=True)
 kc_data=kc_data_org.copy()
@@ -28,7 +27,7 @@ kc_data.tail()
 # kc_data =pd.DataFrame(kc_data_org, columns=[
 #         'Area','Land','Brand','balcony',
 #         'subway','kitchen','hardcover','rooms','halls','price'])
-label_col = 'price'
+label_col = 'unit_price'
 print(kc_data)
 print(kc_data.describe())
 
@@ -136,7 +135,7 @@ def basic_model_3(x_size, y_size):
 model = basic_model_3(arr_x_train.shape[1], arr_y_train.shape[1])
 model.summary()
 
-epochs = 20
+epochs = 50
 batch_size = 1000
 
 print('Epochs: ', epochs)
@@ -165,12 +164,9 @@ print('Val MAE: ', round(valid_score[1], 4), ', Val Loss: ', round(valid_score[0
 
 #
 tf.saved_model.save(model,
-  "./multiModel/h5_Rentmodel/000001/"
+  "./multiModel/h5_SaleOldmodel/000001/"
 )
 
-
-# prediction= model.predict([[6, 7, 1, 0, 0, 0, 0, 1, 1]])
-# print(prediction)
 # def plot_hist(h, xsize=6, ysize=10):
 #     # Prepare plotting
 #     fig_size = plt.rcParams["figure.figsize"]

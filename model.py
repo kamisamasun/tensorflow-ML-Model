@@ -72,10 +72,9 @@ test_labels = test_dataset.pop('price')
 
 normed_train_data = train_dataset
 normed_test_data = test_dataset
-shapelen=len(train_dataset.keys())
 def build_model():
-  model = keras.models.Sequential([
-    layers.Dense(64, activation=tf.nn.relu, input_shape=[shapelen]),
+  model = keras.Sequential([
+    layers.Dense(64, activation=tf.nn.relu, input_shape=[len(train_dataset.keys())]),
     layers.Dense(64, activation=tf.nn.relu),
     layers.Dense(1)
   ])
@@ -94,21 +93,19 @@ history = model.fit(
   normed_train_data, train_labels,
   epochs=EPOCHS, validation_split = 0.2, verbose=0)
 
-# hist = pd.DataFrame(history.history)
-# hist['epoch'] = history.epoch
-# hist.tail()
+hist = pd.DataFrame(history.history)
+hist['epoch'] = history.epoch
+hist.tail()
 model = build_model()
-model.summary()
-# print(model.inupt)
-print(model.output)
 
-# early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
-#
-model.fit(normed_train_data, train_labels, epochs=EPOCHS,
+early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
+
+history = model.fit(normed_train_data, train_labels, epochs=EPOCHS,
                     validation_split = 0.2, verbose=0)
-print( model.evaluate(normed_test_data, test_labels, verbose=0))
-loss,mae, mse = model.evaluate(normed_test_data, test_labels, verbose=0)
-print("Testing set Mean Abs Error: {:5.2f} price".format(mae))
+# print( model.evaluate(normed_test_data, test_labels, verbose=0))
+# loss,acc, mae, mse = model.evaluate(normed_test_data, test_labels, verbose=0)
+# print("Restored model, accuracy: {:5.2f}%".format(100*acc))
+# print("Testing set Mean Abs Error: {:5.2f} price".format(mae))
 
 predict_raw_dataset=pd.read_csv('predict.data', names=['area','category'],
                       na_values = "?", comment='\t',
@@ -134,17 +131,11 @@ normed_predict_data=predict_raw_dataset
 print(normed_predict_data)
 test_predictions = model.predict(normed_predict_data).flatten()
 print(test_predictions)
+model.save('my_model.h5')
 
-
-tf.saved_model.save(model,
-  "./h5_savedmodel/000001/"
+tf.saved_model.simple_save(
+  tf.keras.backend.get_session(),
+  "./h5_savedmodel/",
+  inputs={"BuildingInfo": model.input},
+  outputs={"Price": model.output}
 )
-
-# model.save('my_model.h5')
-#
-# tf.saved_model.save(
-#   tf.keras.backend.get_session(),
-#   "./h5_savedmodel/",
-#   inputs={"BuildingInfo": model.input},
-#   outputs={"Price": model.output}
-# )
